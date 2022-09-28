@@ -51,9 +51,6 @@ class Game:
                 self.is_getting_out_of_penalty_box = True
 
                 print("%s is getting out of the penalty box" % self.players[self.current_player])
-                self.places[self.current_player] = self.places[self.current_player] + roll
-                if self.places[self.current_player] > 11:
-                    self.places[self.current_player] = self.places[self.current_player] - 12
 
                 print(self.players[self.current_player] + \
                             '\'s new location is ' + \
@@ -63,11 +60,10 @@ class Game:
             else:
                 print("%s is not getting out of the penalty box" % self.players[self.current_player])
                 self.is_getting_out_of_penalty_box = False
-        else:
-            self.places[self.current_player] = self.places[self.current_player] + roll
-            if self.places[self.current_player] > 11:
-                self.places[self.current_player] = self.places[self.current_player] - 12
 
+        self.places[self.current_player] = self.places[self.current_player] + roll
+        if self.places[self.current_player] > 11:
+            self.places[self.current_player] = self.places[self.current_player] - 1
             print(self.players[self.current_player] + \
                         '\'s new location is ' + \
                         str(self.places[self.current_player]))
@@ -93,10 +89,10 @@ class Game:
         if self.places[self.current_player] == 10: return 'Sports'
         return 'Rock'
 
-    def was_correctly_answered(self):
+    def correct(self):
         if self.in_penalty_box[self.current_player]:
             if self.is_getting_out_of_penalty_box:
-                print('Answer was correct!!!!')
+                print('Answer was correct!')
                 self.purses[self.current_player] += 1
                 print(self.players[self.current_player] + \
                     ' now has ' + \
@@ -130,7 +126,7 @@ class Game:
 
             return winner
 
-    def wrong_answer(self):
+    def wrong(self):
         print('Question was incorrectly answered')
         print(self.players[self.current_player] + " was sent to the penalty box")
         self.in_penalty_box[self.current_player] = True
@@ -143,7 +139,7 @@ class Game:
         return not (self.purses[self.current_player] == 6)
 
 
-from random import randrange
+from random import randrange, seed
 
 if __name__ == '__main__':
     not_a_winner = False
@@ -154,12 +150,14 @@ if __name__ == '__main__':
     game.add('Pat')
     game.add('Sue')
 
+    seed(4)
+
     while True:
         game.roll(randrange(5) + 1)
 
         if randrange(9) == 7:
-            not_a_winner = game.wrong_answer()
+            not_a_winner = game.wrong()
         else:
-            not_a_winner = game.was_correctly_answered()
+            not_a_winner = game.correct()
 
         if not not_a_winner: break
